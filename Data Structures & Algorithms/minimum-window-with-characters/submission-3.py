@@ -1,0 +1,35 @@
+class Solution:
+    def minWindow(self, s: str, t: str) -> str:
+        def helper(smap,tmap):
+            for char in tmap:
+                if smap.get(char,0)<tmap[char]:
+                    return False
+            return True
+        
+        tmap = {}
+        for char in t:
+            tmap[char] = tmap.get(char,0)+1
+        left = 0
+        smap = {}
+        ans = ""
+        required = len(tmap)
+        formed = 0
+        for right in range(len(s)):
+            smap[s[right]] = smap.get(s[right],0)+1
+            #contract logic first
+            #we increased the count of formed only when the certain criteraia matches
+            if smap[s[right]] == tmap.get(s[right],0):
+                formed+=1
+            
+            while formed==required:
+                curr = s[left:right+1]
+                if ans=="" or len(curr)<len(ans):
+                    ans = curr
+                smap[s[left]] -= 1
+                if smap[s[left]] < tmap.get(s[left],0):
+                    formed-=1
+                if smap[s[left]]==0:
+                    smap.pop(s[left])
+                left+=1
+        return ans
+        
